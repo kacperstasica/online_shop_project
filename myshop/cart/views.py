@@ -1,7 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.urls import reverse_lazy, reverse
-from django.views.decorators.http import require_POST
-from django.views.generic import FormView, View, DeleteView, TemplateView
+from django.urls import reverse_lazy
+from django.views.generic import FormView, View
 
 from .cart import Cart
 from .forms import CartAddProductForm
@@ -32,32 +31,25 @@ class CartAdd(FormView):
         return super().form_valid(form)
 
 
-# class CartRemove(TemplateView):
-#     template_name = 'cart/detail.html'
-#     # form_class = CartAddProductForm
-#     http_method_names = ['post']
-#     success_url = reverse_lazy('cart:cart_detail')
-#
-#     def get_product(self):
-#         product_id = self.kwargs.get('product_id', None)
-#         return get_object_or_404(Product, id=product_id)
-#
-#     def form_valid(self, form):
-#         cart = Cart(self.request)
-#         cart.remove(product=self.get_product())
-#         return super().form_valid(form)
+class CartRemove(View):
+    http_method_names = ['post']
+    success_url = reverse_lazy('cart:cart_detail')
 
-@require_POST
-def cart_remove(request, product_id):
-    cart = Cart(request)
-    product = get_object_or_404(Product, id=product_id)
-    cart.remove(product)
-    return redirect('cart:cart_detail')
+    def post(self, request, *args, **kwargs):
+        cart = Cart(self.request)
+        cart.remove(product=self.get_product())
+        return redirect(self.success_url)
+
+    def get_product(self):
+        product_id = self.kwargs.get('product_id', None)
+        return get_object_or_404(Product, id=product_id)
 
 
-def cart_detail(request):
-    cart = Cart(request)
-    for item in cart:
-        item['update_quantity_form'] = CartAddProductForm(initial={'quantity': item['quantity'],
-                                                                   'override': True})
-    return render(request, 'cart/detail.html', {'cart': cart})
+class CartDetail(View):
+
+    def get(self, request):
+        cart = Cart(self.request)
+        for item in cart:
+            item['update_quantity_form'] = CartAddProductForm(initial={'quantity': item['quantity'],
+                                                                       'override': True})
+        return render(request, 'cart/detail.html', {'cart': cart})
