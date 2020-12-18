@@ -8,6 +8,7 @@ django = "3.0"
 Pillow = "7.0.0"
 celery = "==4.4.2"
 flower = "==0.9.3"
+braintree = "==3.59.0"
 
 [dev-packages]
 flake8 = "*"
