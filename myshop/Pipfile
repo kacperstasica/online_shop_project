@@ -6,7 +6,8 @@ name = "pypi"
 [packages]
 django = "3.0"
 Pillow = "7.0.0"
-celery = "4.4.2"
+celery = "==4.4.2"
+flower = "==0.9.3"
 
 [dev-packages]
 flake8 = "*"

@@ -4,6 +4,7 @@ from django.views.generic import View
 from cart.cart import Cart
 from orders.forms import OrderCreateForm
 from orders.models import OrderItem
+from .tasks import order_created
 
 
 class OrderCreate(View):
@@ -24,4 +25,5 @@ class OrderCreate(View):
                                          price=item['price'],
                                          quantity=item['quantity'])
             cart.clear()
+            order_created.delay(order.id)
             return render(request, 'orders/order/created.html', {'order': order})
