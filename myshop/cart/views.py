@@ -52,4 +52,4 @@ class CartDetail(View):
         for item in cart:
             item['update_quantity_form'] = CartAddProductForm(initial={'quantity': item['quantity'],
                                                                        'override': True})
-        return render(request, 'cart/detail.html', {'cart': cart})
+        return render(request, 'cart/order_detail.html', {'cart': cart})

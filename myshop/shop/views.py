@@ -25,7 +25,7 @@ class ProductListView(TemplateView):
 
 
 class ProductDetailView(DetailView):
-    template_name = 'shop/product/detail.html'
+    template_name = 'shop/product/order_detail.html'
     model = Product
 
     def get_context_data(self, **kwargs):
