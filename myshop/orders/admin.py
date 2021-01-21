@@ -10,8 +10,8 @@ from orders.models import OrderItem, Order
 from orders.utils import convert_bool_to_yes_or_no
 
 
-def export_to_csv(modeladmin, request, queryset):
-    opts = modeladmin.model._meta
+def export_to_csv(model_admin, request, queryset):
+    opts = model_admin.model._meta
     content_disposition = f'attachment; filename={opts.verbose_name}.csv'
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = content_disposition
@@ -46,7 +46,7 @@ class OrderItemInline(admin.TabularInline):
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'first_name', 'last_name', 'email',
                     'address', 'postal_code', 'city', 'paid',
-                    'created', 'updated', 'order_detail']
+                    'created', 'updated', 'order_detail', 'order_pdf']
     list_filter = ['paid', 'created', 'updated']
     inlines = [OrderItemInline]
     actions = [export_to_csv]
@@ -54,3 +54,9 @@ class OrderAdmin(admin.ModelAdmin):
     def order_detail(self, obj):
         url = reverse('orders:admin_order_detail', args=[obj.pk])
         return mark_safe(f'<a href="{url}">View</a>')
+
+    def order_pdf(self, obj):
+        url = reverse('orders:admin_order_pdf', args=[obj.pk])
+        return mark_safe(f'<a href="{url}">PDF</a>')
+
+    order_pdf.short_description = 'Invoice'
