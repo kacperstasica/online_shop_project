@@ -6,11 +6,12 @@ from django.views.generic.base import View, TemplateView
 
 from myshop import settings
 from orders.models import Order
+from payment.tasks import payment_completed
 
 gateway = braintree.BraintreeGateway(settings.BRAINTREE_CONF)
 
 
-class PaymentProcess(View):
+class PaymentProcessView(View):
 
     def get(self, request):
         # generate token
@@ -41,14 +42,16 @@ class PaymentProcess(View):
             # store the transaction id
             order.braintree_id = result.transaction.id
             order.save()
+            # launch asynchronous task
+            payment_completed.delay(order.id)
             return redirect('payment:done')
         else:
             return redirect('payment:cancelled')
 
 
-class PaymentDone(TemplateView):
+class PaymentDoneView(TemplateView):
     template_name = 'payment/done.html'
 
 
-class PaymentCanceled(TemplateView):
+class PaymentCanceledView(TemplateView):
     template_name = 'payment/canceled.html'
