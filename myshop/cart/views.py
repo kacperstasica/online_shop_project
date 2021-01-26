@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import FormView, View
 
+from coupons.forms import CouponApplyForm
 from .cart import Cart
 from .forms import CartAddProductForm
 from shop.models import Product
@@ -52,4 +53,6 @@ class CartDetail(View):
         for item in cart:
             item['update_quantity_form'] = CartAddProductForm(initial={'quantity': item['quantity'],
                                                                        'override': True})
-        return render(request, 'cart/order_detail.html', {'cart': cart})
+        coupon_apply_form = CouponApplyForm()
+        return render(request, 'cart/detail.html', {'cart': cart,
+                                                    'coupon_apply_form': coupon_apply_form})

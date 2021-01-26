@@ -46,7 +46,7 @@ class PaymentProcessView(View):
             payment_completed.delay(order.id)
             return redirect('payment:done')
         else:
-            return redirect('payment:cancelled')
+            return redirect('payment:canceled')
 
 
 class PaymentDoneView(TemplateView):
