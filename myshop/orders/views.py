@@ -22,7 +22,12 @@ class OrderCreate(CreateView):
 
     def form_valid(self, form):
         cart = Cart(self.request)
-        order = form.save()
+        # create Order object, but avoid saving it to database with commit=False
+        order = form.save(commit=False)
+        if cart.coupon:
+            order.coupon = cart.coupon
+            order.discount = cart.coupon.discount
+        order.save()
         for item in cart:
             OrderItem.objects.create(order=order,
                                      product=item['product'],

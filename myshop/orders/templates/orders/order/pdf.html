@@ -15,6 +15,7 @@
         {{ order.email }}<br>
         {{ order.address }}<br>
         {{ order.postal_code }}, {{ order.city }}
+        {% if order.coupon %}</br>COUPON: {{ order.coupon }} {% endif %}
     </p>
     <h3>Items bought</h3>
     <table>
