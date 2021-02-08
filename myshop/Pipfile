@@ -12,6 +12,7 @@ braintree = "==3.59.0"
 django-environ = "*"
 psycopg2-binary = "*"
 WeasyPrint = "*"
+redis = "*"
 
 [dev-packages]
 flake8 = "*"

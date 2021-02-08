@@ -3,6 +3,7 @@ from django.views.generic import DetailView, TemplateView
 
 from .models import Category, Product
 from cart.forms import CartAddProductForm
+from .recommender import Recommender
 
 
 class ProductListView(TemplateView):
@@ -28,8 +29,15 @@ class ProductDetailView(DetailView):
     template_name = 'shop/product/detail.html'
     model = Product
 
+    def get_object(self, *args, **kwargs):
+        pk = self.kwargs.get('id')
+        instance = Product.objects.get(id=pk)
+        return instance
+
     def get_context_data(self, **kwargs):
+        r = Recommender()
         return {
             'cart_product_form': CartAddProductForm,
+            'recommended_products': r.suggest_products_for([self.get_object(Product)], 4),
             **super().get_context_data(**kwargs)
         }
